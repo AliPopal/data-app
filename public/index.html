@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Date App 😏</title>
+
+<style>
+body {
+    text-align: center;
+    font-family: Arial;
+    margin-top: 50px;
+    overflow: hidden;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    margin: 10px;
+}
+
+#noBtn {
+    position: relative;
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to { transform: translateY(100vh); }
+}
+
+#liveBox {
+    margin-top: 40px;
+    padding: 15px;
+    border: 2px dashed #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="title"></h1>
+
+<input type="date" id="date"><br>
+
+<button id="yesBtn">Ja 😍</button>
+<button id="noBtn">Nein 😈</button>
+
+<p id="result"></p>
+
+<img id="cat" width="200" style="display:none;">
+
+<div id="liveBox">
+    <h3>🔥 Live Antwort:</h3>
+    <p id="liveText">Noch nichts passiert...</p>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io();
+
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name") || "du";
+
+document.getElementById("title").innerText = `Hey ${name} 😺 hast du Zeit mit mir?`;
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const result = document.getElementById("result");
+const cat = document.getElementById("cat");
+const liveText = document.getElementById("liveText");
+
+let attempts = 0;
+
+// LIVE
+socket.on("liveUpdate", (msg) => {
+    liveText.innerText = msg;
+});
+
+// JA
+yesBtn.onclick = async () => {
+    const date = document.getElementById("date").value;
+
+    const res = await fetch("/answer", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({date, name})
+    });
+
+    const data = await res.json();
+
+    result.innerHTML = data.message;
+
+    cat.src = "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif";
+    cat.style.display = "block";
+
+    megaConfetti();
+};
+
+// NEIN → läuft weg
+function moveButton() {
+    attempts++;
+
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+
+    noBtn.style.position = "absolute";
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
+
+    const messages = [
+        "😏 nope",
+        "😜 zu langsam",
+        "😈 versuch's nochmal",
+        "😂 keine Chance",
+        "😹 ich bin weg"
+    ];
+
+    result.innerHTML = messages[Math.min(attempts, messages.length - 1)];
+}
+
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", moveButton);
+noBtn.addEventListener("click", moveButton);
+
+// KONFETTI
+function megaConfetti() {
+    for (let i = 0; i < 120; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti";
+
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
+        el.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+    }
+}
+</script>
+
+</body>
+</html>
