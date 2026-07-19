@@ -16,7 +16,7 @@ body {
     min-height: 100vh;
     background: linear-gradient(135deg, #fce4ec, #f8bbd0);
     color: #333;
-    overflow: hidden; /* Beibehalten für den weglaufenden Button */
+    overflow: hidden;
 }
 
 .container {
@@ -81,7 +81,6 @@ button {
     color: #444;
 }
 
-/* Das große Haupt-GIF (beim JA) */
 #cat {
     width: 100%;
     max-width: 300px;
@@ -99,7 +98,6 @@ button {
     background-color: #fcfcfc;
 }
 
-/* Konfetti */
 .confetti {
     position: fixed;
     width: 10px;
@@ -112,29 +110,35 @@ button {
     to { transform: translateY(100vh); }
 }
 
-/* --- Sichtbare & animierte Katzen-Sticker im Frontend --- */
+/* Katzen-Sticker: standardmäßig versteckt, erscheinen erst bei "Ja" */
 .cat-sticker {
     position: fixed;
     width: 140px;
     height: 140px;
     object-fit: contain;
-    z-index: 2; /* Sichtbar vor dem Hintergrund platziert */
+    z-index: 2;
     border-radius: 10px;
-    transition: transform 0.3s ease;
+    display: none;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
-/* Sticker leicht neigen für cooleren Look */
+.cat-sticker.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
 .cat-sticker:hover {
     transform: scale(1.1) rotate(5deg);
 }
 
-/* Verteilung auf dem Bildschirm */
 #bg-cat-1 { top: 8%; left: 8%; }
 #bg-cat-2 { top: 8%; right: 8%; }
 #bg-cat-3 { bottom: 8%; left: 8%; }
 #bg-cat-4 { bottom: 8%; right: 8%; }
 
-/* Mobile Optimierung: Sticker werden etwas kleiner, damit sie nicht stören */
 @media (max-width: 800px) {
     .cat-sticker {
         width: 80px;
@@ -150,11 +154,10 @@ button {
 
 <body>
 
-    <!-- Die sichtbaren Katzen-GIFs auf der Seite -->
-    <img id="bg-cat-1" class="cat-sticker" src="https://media.tenor.com/bK777gSh6Y0AAAAj/kitty-cat.gif" alt="Katze 1">
-    <img id="bg-cat-2" class="cat-sticker" src="https://media.tenor.com/J3Z7978Z9wAAAAAj/cat-cats.gif" alt="Katze 2">
-    <img id="bg-cat-3" class="cat-sticker" src="https://media.tenor.com/v8p77R94Z6IAAAAj/kitty-cat.gif" alt="Katze 3">
-    <img id="bg-cat-4" class="cat-sticker" src="https://media.tenor.com/0v8gWfXhE78AAAAj/happy-cat-dance.gif" alt="Katze 4">
+    <img id="bg-cat-1" class="cat-sticker" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" alt="Katze 1" onerror="this.style.outline='2px solid red'; console.error('bg-cat-1 GIF konnte nicht geladen werden');">
+    <img id="bg-cat-2" class="cat-sticker" src="https://media.giphy.com/media/13CoXDiaCcCoyk/giphy.gif" alt="Katze 2" onerror="this.style.outline='2px solid red'; console.error('bg-cat-2 GIF konnte nicht geladen werden');">
+    <img id="bg-cat-3" class="cat-sticker" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Katze 3" onerror="this.style.outline='2px solid red'; console.error('bg-cat-3 GIF konnte nicht geladen werden');">
+    <img id="bg-cat-4" class="cat-sticker" src="https://media.giphy.com/media/xUOxf48UBRxRi2gJ7W/giphy.gif" alt="Katze 4" onerror="this.style.outline='2px solid red'; console.error('bg-cat-4 GIF konnte nicht geladen werden');">
 
     <div class="container">
         <h1 id="title"></h1>
@@ -168,8 +171,7 @@ button {
 
         <p id="result"></p>
 
-        <!-- Haupt-GIF Platzhalter (wird bei JA geladen) -->
-        <img id="cat" alt="Happy Cat GIF">
+        <img id="cat" alt="Happy Cat GIF" onerror="console.error('Haupt-Katze GIF konnte nicht geladen werden');">
 
         <div id="liveBox">
             <h3>🔥 Live Antwort:</h3>
@@ -180,12 +182,10 @@ button {
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-// Initialisierung
 const socket = io();
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name") || "du";
 
-// UI Elemente holen
 const title = document.getElementById("title");
 const dateInput = document.getElementById("date");
 const yesBtn = document.getElementById("yesBtn");
@@ -193,18 +193,16 @@ const noBtn = document.getElementById("noBtn");
 const result = document.getElementById("result");
 const cat = document.getElementById("cat");
 const liveText = document.getElementById("liveText");
+const bgCats = document.querySelectorAll(".cat-sticker");
 
-// Titel setzen
 title.innerText = `Hey Bebek, willst du mein Date sein?`;
 
 let attempts = 0;
 
-// LIVE updates empfangen
 socket.on("liveUpdate", (msg) => {
     liveText.innerText = msg;
 });
 
-// JA - Bestätigung
 yesBtn.onclick = async () => {
     const date = dateInput.value;
 
@@ -217,17 +215,19 @@ yesBtn.onclick = async () => {
         const data = await res.json();
         result.innerHTML = data.message;
     } catch (e) {
-        result.innerHTML = "OMG 😍 du hat JA gesagt!"; 
+        result.innerHTML = "OMG 😍 du hat JA gesagt!";
     }
 
-    // Haupt-Erfolgs-GIF laden
-    cat.src = "https://media.tenor.com/269_9MvX0XIAAAAj/cat-cute.gif"; 
+    cat.src = "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif";
     cat.style.display = "block";
+
+    bgCats.forEach((el, i) => {
+        setTimeout(() => el.classList.add("show"), i * 150);
+    });
 
     megaConfetti();
 };
 
-// NEIN → läuft weg
 function moveButton() {
     attempts++;
 
@@ -249,12 +249,10 @@ function moveButton() {
     result.innerHTML = messages[Math.min(attempts, messages.length - 1)];
 }
 
-// Events für den weglaufenden Button
 noBtn.addEventListener("mouseover", moveButton);
 noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveButton(); });
 noBtn.addEventListener("click", moveButton);
 
-// KONFETTI Effekt
 function megaConfetti() {
     for (let i = 0; i < 120; i++) {
         const el = document.createElement("div");
