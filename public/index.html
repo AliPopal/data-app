@@ -2,63 +2,197 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Date App 😏</title>
 
 <style>
+/* Modernes Design */
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0); /* Weicher Rosa-Farbverlauf */
+    color: #333;
+    overflow: hidden; /* Beibehaltung für den weglaufenden Button */
+}
+
+.container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     text-align: center;
-    font-family: Arial;
-    margin-top: 50px;
-    overflow: hidden;
+    max-width: 500px;
+    width: 90%;
+    z-index: 10; /* Damit der Container über den Hintergrund-GIFs bleibt */
+}
+
+h1 {
+    color: #880e4f;
+    margin-bottom: 25px;
+    font-size: 2.5rem;
+}
+
+input[type="date"] {
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="date"]:focus {
+    outline: none;
+    border-color: #880e4f;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+    flex-wrap: wrap; /* Damit Buttons auf kleinen Bildschirmen umbrechen */
 }
 
 button {
     padding: 15px 30px;
     font-size: 18px;
-    margin: 10px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: bold;
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+#yesBtn {
+    background-color: #4caf50; /* Grün */
+    color: white;
+}
+
+#yesBtn:hover {
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
 }
 
 #noBtn {
-    position: relative;
+    background-color: #f44336; /* Rot */
+    color: white;
+    /* transition: left 0.1s ease, top 0.1s ease; // sanfteres weglaufen? optional */
 }
 
+#noBtn:hover {
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+}
+
+#result {
+    margin-top: 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #444;
+}
+
+#cat {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 15px;
+    margin-top: 20px;
+    display: none; /* Am Anfang versteckt */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#liveBox {
+    margin-top: 35px;
+    padding: 20px;
+    border: 2px dashed #aaa;
+    border-radius: 15px;
+    background-color: #fcfcfc;
+}
+
+#liveBox h3 {
+    margin-top: 0;
+    color: #666;
+}
+
+#liveText {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #777;
+}
+
+/* Konfetti-Animation */
 .confetti {
     position: fixed;
     width: 10px;
     height: 10px;
     top: -10px;
     animation: fall linear forwards;
+    z-index: 20;
 }
 
 @keyframes fall {
     to { transform: translateY(100vh); }
 }
 
-#liveBox {
-    margin-top: 40px;
-    padding: 15px;
-    border: 2px dashed #aaa;
+/* Hintergrund-GIFs (am Anfang versteckt) */
+.cat-background {
+    position: fixed;
+    width: 200px; /* Oder kleiner, je nach Geschmack */
+    height: 200px;
+    opacity: 0.1; /* Sehr transparent, damit es nicht zu sehr ablenkt */
+    display: none;
+    z-index: 1; /* Hinter dem Container */
 }
+
+/* Positionen für die Hintergrund-GIFs */
+#bg-cat-1 { top: 5%; left: 5%; }
+#bg-cat-2 { top: 5%; right: 5%; }
+#bg-cat-3 { bottom: 5%; left: 5%; }
+#bg-cat-4 { bottom: 5%; right: 5%; }
+#bg-cat-5 { top: 50%; left: 10%; transform: translateY(-50%); }
+#bg-cat-6 { top: 50%; right: 10%; transform: translateY(-50%); }
+
 </style>
 </head>
 
 <body>
 
-<h1 id="title"></h1>
+    <!-- Hintergrund-GIFs -->
+    <img id="bg-cat-1" class="cat-background" src="https://media.giphy.com/media/VbnUv4iR1o2tNym8q7/giphy.gif" alt="Cat GIF">
+    <img id="bg-cat-2" class="cat-background" src="https://media.giphy.com/media/cfuL5gqFDreX89p8aD/giphy.gif" alt="Cat GIF">
+    <img id="bg-cat-3" class="cat-background" src="https://media.giphy.com/media/S6S7G3xHq1604N84P9/giphy.gif" alt="Cat GIF">
+    <img id="bg-cat-4" class="cat-background" src="https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif" alt="Cat GIF">
+    <img id="bg-cat-5" class="cat-background" src="https://media.giphy.com/media/13CoXDiaCcCgru/giphy.gif" alt="Cat GIF">
+    <img id="bg-cat-6" class="cat-background" src="https://media.giphy.com/media/W3M5952S77bN/giphy.gif" alt="Cat GIF">
 
-<input type="date" id="date"><br>
 
-<button id="yesBtn">Ja 😍</button>
-<button id="noBtn">Nein 😈</button>
+    <div class="container">
+        <h1 id="title"></h1>
 
-<p id="result"></p>
+        <input type="date" id="date"><br>
 
-<img id="cat" width="200" style="display:none;">
+        <div class="btn-group">
+            <button id="yesBtn">Ja 😍</button>
+            <button id="noBtn">Nein 😈</button>
+        </div>
 
-<div id="liveBox">
-    <h3>🔥 Live Antwort:</h3>
-    <p id="liveText">Noch nichts passiert...</p>
-</div>
+        <p id="result"></p>
+
+        <img id="cat" alt="Result Cat GIF">
+
+        <div id="liveBox">
+            <h3>🔥 Live Antwort:</h3>
+            <p id="liveText">Noch nichts passiert...</p>
+        </div>
+    </div>
 
 <script src="/socket.io/socket.io.js"></script>
 
@@ -75,6 +209,7 @@ const noBtn = document.getElementById("noBtn");
 const result = document.getElementById("result");
 const cat = document.getElementById("cat");
 const liveText = document.getElementById("liveText");
+const bgCats = document.querySelectorAll('.cat-background'); // Hintergrund-GIFs holen
 
 let attempts = 0;
 
@@ -97,8 +232,12 @@ yesBtn.onclick = async () => {
 
     result.innerHTML = data.message;
 
-    cat.src = "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif";
+    // Neues, passendes "Happy" Katzen-GIF
+    cat.src = "https://media.giphy.com/media/KpxvJz3N6Nf8EpxTz5/giphy.gif"; 
     cat.style.display = "block";
+
+    // Hintergrund-GIFs anzeigen
+    bgCats.forEach(cat => cat.style.display = 'block');
 
     megaConfetti();
 };
