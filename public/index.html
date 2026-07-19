@@ -16,11 +16,11 @@ body {
     min-height: 100vh;
     background: linear-gradient(135deg, #fce4ec, #f8bbd0);
     color: #333;
-    overflow: hidden;
+    overflow: hidden; /* Beibehalten für den weglaufenden Button */
 }
 
 .container {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.95); /* Leicht transparent für den Hintergrund */
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -28,6 +28,7 @@ body {
     max-width: 500px;
     width: 90%;
     z-index: 10;
+    position: relative;
 }
 
 h1 {
@@ -46,17 +47,11 @@ input[type="date"] {
     box-sizing: border-box;
 }
 
-input[type="date"]:focus {
-    outline: none;
-    border-color: #880e4f;
-}
-
 .btn-group {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 10px;
-    flex-wrap: wrap;
 }
 
 button {
@@ -65,12 +60,8 @@ button {
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
     font-weight: bold;
-}
-
-button:active {
-    transform: translateY(2px);
+    z-index: 11; /* Über den Hintergrund-GIFs */
 }
 
 #yesBtn {
@@ -78,17 +69,10 @@ button:active {
     color: white;
 }
 
-#yesBtn:hover {
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-}
-
 #noBtn {
     background-color: #f44336;
     color: white;
-}
-
-#noBtn:hover {
-    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+    /* transition: all 0.1s ease; // Optional: Sanfteres Bewegen */
 }
 
 #result {
@@ -98,6 +82,7 @@ button:active {
     color: #444;
 }
 
+/* Das große Haupt-GIF (beim JA) */
 #cat {
     width: 100%;
     max-width: 300px;
@@ -115,22 +100,11 @@ button:active {
     background-color: #fcfcfc;
 }
 
-#liveBox h3 {
-    margin-top: 0;
-    color: #666;
-}
-
-#liveText {
-    font-size: 1.1rem;
-    font-style: italic;
-    color: #777;
-}
-
+/* Konfetti */
 .confetti {
     position: fixed;
     width: 10px;
     height: 10px;
-    top: -10px;
     animation: fall linear forwards;
     z-index: 20;
 }
@@ -139,26 +113,28 @@ button:active {
     to { transform: translateY(100vh); }
 }
 
-/* Fixierte & funktionierende Hintergrund-GIFs */
+/* --- Stabile Hintergrund-GIFs --- */
 .cat-background {
     position: fixed;
-    width: 180px;
-    height: 180px;
+    width: 150px; /* Kleinere Größe */
+    height: 150px;
     object-fit: cover;
-    opacity: 0.15; /* Leicht erhöht für bessere Sichtbarkeit */
-    border-radius: 10px;
-    z-index: 1;
+    opacity: 0.12; /* Sehr dezent */
+    border-radius: 50%; /* Rund für Weichheit */
+    z-index: 1; /* Ganz unten */
 }
 
-#bg-cat-1 { top: 5%; left: 5%; }
-#bg-cat-2 { top: 5%; right: 5%; }
-#bg-cat-3 { bottom: 5%; left: 5%; }
-#bg-cat-4 { bottom: 5%; right: 5%; }
+/* Positionen */
+#bg-cat-1 { top: 10%; left: 10%; }
+#bg-cat-2 { top: 10%; right: 10%; }
+#bg-cat-3 { bottom: 10%; left: 10%; }
+#bg-cat-4 { bottom: 10%; right: 10%; }
 
-@media (max-width: 768px) {
+/* Mobile Anpassung */
+@media (max-width: 600px) {
     .cat-background {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
     }
 }
 </style>
@@ -166,11 +142,11 @@ button:active {
 
 <body>
 
-    <!-- Neue, funktionierende Hintergrund-GIF-Links -->
-    <img id="bg-cat-1" class="cat-background" src="https://media.tenor.com/J3Z7978Z9wAAAAAi/cat-cats.gif" alt="Cat">
-    <img id="bg-cat-2" class="cat-background" src="https://media.tenor.com/v8p77R94Z6IAAAAi/kitty-cat.gif" alt="Cat">
-    <img id="bg-cat-3" class="cat-background" src="https://media.tenor.com/bK777gSh6Y0AAAAi/kitty-cat.gif" alt="Cat">
-    <img id="bg-cat-4" class="cat-background" src="https://media.tenor.com/Z9WfW71v9isAAAAi/peach-cat.gif" alt="Cat">
+    <!-- Die vier stabilen Hintergrund-GIFs (Tenor Links) -->
+    <img id="bg-cat-1" class="cat-background" src="https://media.tenor.com/bK777gSh6Y0AAAAj/kitty-cat.gif" alt="Cat BG 1">
+    <img id="bg-cat-2" class="cat-background" src="https://media.tenor.com/J3Z7978Z9wAAAAAj/cat-cats.gif" alt="Cat BG 2">
+    <img id="bg-cat-3" class="cat-background" src="https://media.tenor.com/v8p77R94Z6IAAAAj/kitty-cat.gif" alt="Cat BG 3">
+    <img id="bg-cat-4" class="cat-background" src="https://media.tenor.com/0v8gWfXhE78AAAAj/happy-cat-dance.gif" alt="Cat BG 4">
 
     <div class="container">
         <h1 id="title"></h1>
@@ -184,7 +160,7 @@ button:active {
 
         <p id="result"></p>
 
-        <!-- Das große "Erfolgs"-Katzen-GIF -->
+        <!-- Haupt-GIF Platzhalter -->
         <img id="cat" alt="Happy Cat GIF">
 
         <div id="liveBox">
@@ -196,42 +172,48 @@ button:active {
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
+// Initialisierung
 const socket = io();
-
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name") || "du";
 
-document.getElementById("title").innerText = `Hey Bebek, willst du mein Date sein?`;
-
+// UI Elemente holen
+const title = document.getElementById("title");
+const dateInput = document.getElementById("date");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const result = document.getElementById("result");
 const cat = document.getElementById("cat");
 const liveText = document.getElementById("liveText");
 
+// Titel setzen
+title.innerText = `Hey Bebek, willst du mein Date sein?`;
+
 let attempts = 0;
 
-// LIVE
+// LIVE updates empfangen
 socket.on("liveUpdate", (msg) => {
     liveText.innerText = msg;
 });
 
-// JA
+// JA - Bestätigung
 yesBtn.onclick = async () => {
-    const date = document.getElementById("date").value;
+    const date = dateInput.value;
 
-    const res = await fetch("/answer", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({date, name})
-    });
+    try {
+        const res = await fetch("/answer", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({date, name})
+        });
+        const data = await res.json();
+        result.innerHTML = data.message;
+    } catch (e) {
+        result.innerHTML = "OMG 😍 du hat JA gesagt!"; // Fallback falls API fehlt
+    }
 
-    const data = await res.json();
-
-    result.innerHTML = data.message;
-
-    // Stabiler Link für das feiernde Haupt-Katzen-GIF
-    cat.src = "https://media.tenor.com/0v8gWfXhE78AAAAi/happy-cat-dance.gif"; 
+    // --- STABILER TENOR LINK FÜR DAS HAUPT-GIF ---
+    cat.src = "https://media.tenor.com/269_9MvX0XIAAAAj/cat-cute.gif"; 
     cat.style.display = "block";
 
     megaConfetti();
@@ -241,12 +223,13 @@ yesBtn.onclick = async () => {
 function moveButton() {
     attempts++;
 
-    const maxX = window.innerWidth - noBtn.offsetWidth;
-    const maxY = window.innerHeight - noBtn.offsetHeight;
+    // Berechnung der Grenzen
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
     noBtn.style.position = "absolute";
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    noBtn.style.left = Math.max(10, Math.random() * maxX) + "px";
+    noBtn.style.top = Math.max(10, Math.random() * maxY) + "px";
 
     const messages = [
         "😏 nope",
@@ -259,20 +242,20 @@ function moveButton() {
     result.innerHTML = messages[Math.min(attempts, messages.length - 1)];
 }
 
+// Events für den weglaufenden Button
 noBtn.addEventListener("mouseover", moveButton);
-noBtn.addEventListener("touchstart", moveButton);
+noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveButton(); });
 noBtn.addEventListener("click", moveButton);
 
-// KONFETTI
+// KONFETTI Effekt
 function megaConfetti() {
     for (let i = 0; i < 120; i++) {
         const el = document.createElement("div");
         el.className = "confetti";
-
         el.style.left = Math.random() * 100 + "vw";
+        el.style.top = -10 + "px";
         el.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
         el.style.animationDuration = (Math.random() * 3 + 2) + "s";
-
         document.body.appendChild(el);
         setTimeout(() => el.remove(), 4000);
     }
