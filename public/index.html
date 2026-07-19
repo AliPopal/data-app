@@ -20,7 +20,7 @@ body {
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.95); /* Leicht transparent für den Hintergrund */
+    background: white;
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -61,7 +61,7 @@ button {
     border-radius: 30px;
     cursor: pointer;
     font-weight: bold;
-    z-index: 11; /* Über den Hintergrund-GIFs */
+    z-index: 11;
 }
 
 #yesBtn {
@@ -72,7 +72,6 @@ button {
 #noBtn {
     background-color: #f44336;
     color: white;
-    /* transition: all 0.1s ease; // Optional: Sanfteres Bewegen */
 }
 
 #result {
@@ -113,40 +112,49 @@ button {
     to { transform: translateY(100vh); }
 }
 
-/* --- Stabile Hintergrund-GIFs --- */
-.cat-background {
+/* --- Sichtbare & animierte Katzen-Sticker im Frontend --- */
+.cat-sticker {
     position: fixed;
-    width: 150px; /* Kleinere Größe */
-    height: 150px;
-    object-fit: cover;
-    opacity: 0.12; /* Sehr dezent */
-    border-radius: 50%; /* Rund für Weichheit */
-    z-index: 1; /* Ganz unten */
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    z-index: 2; /* Sichtbar vor dem Hintergrund platziert */
+    border-radius: 10px;
+    transition: transform 0.3s ease;
 }
 
-/* Positionen */
-#bg-cat-1 { top: 10%; left: 10%; }
-#bg-cat-2 { top: 10%; right: 10%; }
-#bg-cat-3 { bottom: 10%; left: 10%; }
-#bg-cat-4 { bottom: 10%; right: 10%; }
+/* Sticker leicht neigen für cooleren Look */
+.cat-sticker:hover {
+    transform: scale(1.1) rotate(5deg);
+}
 
-/* Mobile Anpassung */
-@media (max-width: 600px) {
-    .cat-background {
+/* Verteilung auf dem Bildschirm */
+#bg-cat-1 { top: 8%; left: 8%; }
+#bg-cat-2 { top: 8%; right: 8%; }
+#bg-cat-3 { bottom: 8%; left: 8%; }
+#bg-cat-4 { bottom: 8%; right: 8%; }
+
+/* Mobile Optimierung: Sticker werden etwas kleiner, damit sie nicht stören */
+@media (max-width: 800px) {
+    .cat-sticker {
         width: 80px;
         height: 80px;
     }
+    #bg-cat-1 { top: 2%; left: 2%; }
+    #bg-cat-2 { top: 2%; right: 2%; }
+    #bg-cat-3 { bottom: 2%; left: 2%; }
+    #bg-cat-4 { bottom: 2%; right: 2%; }
 }
 </style>
 </head>
 
 <body>
 
-    <!-- Die vier stabilen Hintergrund-GIFs (Tenor Links) -->
-    <img id="bg-cat-1" class="cat-background" src="https://media.tenor.com/bK777gSh6Y0AAAAj/kitty-cat.gif" alt="Cat BG 1">
-    <img id="bg-cat-2" class="cat-background" src="https://media.tenor.com/J3Z7978Z9wAAAAAj/cat-cats.gif" alt="Cat BG 2">
-    <img id="bg-cat-3" class="cat-background" src="https://media.tenor.com/v8p77R94Z6IAAAAj/kitty-cat.gif" alt="Cat BG 3">
-    <img id="bg-cat-4" class="cat-background" src="https://media.tenor.com/0v8gWfXhE78AAAAj/happy-cat-dance.gif" alt="Cat BG 4">
+    <!-- Die sichtbaren Katzen-GIFs auf der Seite -->
+    <img id="bg-cat-1" class="cat-sticker" src="https://media.tenor.com/bK777gSh6Y0AAAAj/kitty-cat.gif" alt="Katze 1">
+    <img id="bg-cat-2" class="cat-sticker" src="https://media.tenor.com/J3Z7978Z9wAAAAAj/cat-cats.gif" alt="Katze 2">
+    <img id="bg-cat-3" class="cat-sticker" src="https://media.tenor.com/v8p77R94Z6IAAAAj/kitty-cat.gif" alt="Katze 3">
+    <img id="bg-cat-4" class="cat-sticker" src="https://media.tenor.com/0v8gWfXhE78AAAAj/happy-cat-dance.gif" alt="Katze 4">
 
     <div class="container">
         <h1 id="title"></h1>
@@ -160,7 +168,7 @@ button {
 
         <p id="result"></p>
 
-        <!-- Haupt-GIF Platzhalter -->
+        <!-- Haupt-GIF Platzhalter (wird bei JA geladen) -->
         <img id="cat" alt="Happy Cat GIF">
 
         <div id="liveBox">
@@ -209,10 +217,10 @@ yesBtn.onclick = async () => {
         const data = await res.json();
         result.innerHTML = data.message;
     } catch (e) {
-        result.innerHTML = "OMG 😍 du hat JA gesagt!"; // Fallback falls API fehlt
+        result.innerHTML = "OMG 😍 du hat JA gesagt!"; 
     }
 
-    // --- STABILER TENOR LINK FÜR DAS HAUPT-GIF ---
+    // Haupt-Erfolgs-GIF laden
     cat.src = "https://media.tenor.com/269_9MvX0XIAAAAj/cat-cute.gif"; 
     cat.style.display = "block";
 
@@ -223,7 +231,6 @@ yesBtn.onclick = async () => {
 function moveButton() {
     attempts++;
 
-    // Berechnung der Grenzen
     const maxX = window.innerWidth - noBtn.offsetWidth - 20;
     const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
